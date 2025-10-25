@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vòng Quay Tên Siêu Đẹp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.5), 0 0 40px rgba(255, 107, 107, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 107, 107, 0.8), 0 0 80px rgba(255, 107, 107, 0.5); }
+        }
+
+        @keyframes spin-button {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes winner-bounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(-5deg); }
+            75% { transform: scale(1.2) rotate(5deg); }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient-shift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: fixed;
+            top: -10px;
+            z-index: 1000;
+            animation: confetti-fall 3s linear;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 30px 90px rgba(0,0,0,0.4);
+            max-width: 900px;
+            width: 100%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            font-size: 3em;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 2px;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 450px;
+            height: 450px;
+            margin: 0 auto 40px;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            height: 450px;
+            border: 3px solid rgba(255, 107, 107, 0.6);
+            border-radius: 50%;
+            animation: pulse-ring 2s infinite;
+        }
+
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid #fff;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(0,0,0,0.2);
+            position: relative;
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.05, 0.99);
+            z-index: 2;
+        }
+
+        .wheel-spinning {
+            animation: glow 0.5s infinite;
+        }
+
+        .arrow {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 50px solid #ff6b6b;
+            z-index: 10;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.4));
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .arrow::after {
+            content: '👇';
+            position: absolute;
+            top: -70px;
+            left: -15px;
+            font-size: 30px;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 5px solid white;
+            border-radius: 50%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: white;
+            font-size: 0.9em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .center-circle:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .center-circle.spinning {
+            animation: spin-button 1s linear infinite;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            font-size: 2em;
+            font-weight: 900;
+            color: white;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .winner-result {
+            animation: winner-bounce 0.8s ease infinite;
+            font-size: 2.2em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .names-input {
+            margin-top: 30px;
+        }
+
+        .names-input label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 20px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 140px;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.9);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 900;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <h1>🎡 VÒNG QUAY THẦN TÀI 🎡</h1>
+        
+        <div class="wheel-container">
+            <div class="pulse-ring"></div>
+            <div class="arrow"></div>
+            <canvas id="wheel" width="450" height="450"></canvas>
+            <div class="center-circle" id="centerCircle">🎯 SPIN</div>
+        </div>
+
+        <div class="controls">
+            <button id="spinBtn" onclick="spin()">✨ QUAY NGAY! ✨</button>
+        </div>
+
+        <div class="result" id="result">Nhấn nút để bắt đầu phép màu! 🌟</div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-value" id="totalSpins">0</span>
+                <span class="stat-label">Lượt quay</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="totalNames">0</span>
+                <span class="stat-label">Người chơi</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="lastWinner">---</span>
+                <span class="stat-label">Người thắng</span>
+            </div>
+        </div>
+
+        <div class="names-input">
+            <label for="namesList">📝 Danh sách tên (mỗi tên một dòng):</label>
+            <textarea id="namesList" placeholder="Nguyễn Văn A&#10;Trần Thị B&#10;Lê Văn C&#10;Phạm Thị D">Nguyễn Văn A
+Trần Thị B
+Lê Văn C
+Phạm Thị D
+Hoàng Văn E
+Đặng Thị F
+Vũ Thị G
+Bùi Văn H</textarea>
+        </div>
+    </div>
+
+    <script>
+        let names = [];
+        let spinning = false;
+        let currentRotation = 0;
+        let totalSpins = 0;
+        let lastWinner = '---';
+
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B739', '#6C5CE7'];
+
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `float ${Math.random() * 3 + 2}s ease-in-out infinite`;
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.opacity = Math.random() * 0.5 + 0.2;
+                particles.appendChild(particle);
+            }
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 15 + 5 + 'px';
+                    confetti.style.height = confetti.style.width;
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function updateNames() {
+            const textarea = document.getElementById('namesList');
+            names = textarea.value.split('\n').filter(name => name.trim() !== '');
+            drawWheel();
+            document.getElementById('totalNames').textContent = names.length;
+        }
+
+        function drawWheel() {
+            if (names.length === 0) return;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = canvas.width / 2 - 15;
+            const sliceAngle = (2 * Math.PI) / names.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < names.length; i++) {
+                const startAngle = i * sliceAngle;
+                const endAngle = (i + 1) * sliceAngle;
+                
+                const gradient = ctx.createLinearGradient(
+                    centerX + Math.cos(startAngle) * radius,
+                    centerY + Math.sin(startAngle) * radius,
+                    centerX + Math.cos(endAngle) * radius,
+                    centerY + Math.sin(endAngle) * radius
+                );
+                gradient.addColorStop(0, colors[i % colors.length]);
+                gradient.addColorStop(1, adjustBrightness(colors[i % colors.length], -20));
+
+                ctx.beginPath();
+                ctx.fillStyle = gradient;
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 18px Arial';
+                ctx.shadowColor = 'rgba(0,0,0,0.8)';
+                ctx.shadowBlur = 5;
+                ctx.fillText(names[i], radius - 25, 7);
+                ctx.restore();
+            }
+        }
+
+        function adjustBrightness(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255))
+                .toString(16).slice(1);
+        }
+
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'spin') {
+                oscillator.frequency.value = 800;
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } else if (type === 'win') {
+                [523.25, 659.25, 783.99].forEach((freq, i) => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.2, audioContext.currentTime + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.3);
+                    osc.start(audioContext.currentTime + i * 0.1);
+                    osc.stop(audioContext.currentTime + i * 0.1 + 0.3);
+                });
+            }
+        }
+
+        function spin() {
+            if (spinning || names.length === 0) return;
+
+            spinning = true;
+            document.getElementById('spinBtn').disabled = true;
+            document.getElementById('result').textContent = '🌪️ ĐANG QUAY... 🌪️';
+            document.getElementById('result').className = 'result';
+            
+            canvas.classList.add('wheel-spinning');
+            document.getElementById('centerCircle').classList.add('spinning');
+            
+            playSound('spin');
+
+            const spins = 8 + Math.random() * 5;
+            const extraDegrees = Math.random() * 360;
+            const totalRotation = spins * 360 + extraDegrees;
+            
+            currentRotation += totalRotation;
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                canvas.classList.remove('wheel-spinning');
+                document.getElementById('centerCircle').classList.remove('spinning');
+                
+                const normalizedRotation = currentRotation % 360;
+                const sliceAngle = 360 / names.length;
+                const winningIndex = Math.floor((360 - normalizedRotation) / sliceAngle) % names.length;
+                const winner = names[winningIndex];
+
+                playSound('win');
+                createConfetti();
+
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `🎊 CHÚC MỪNG 🎊<br>${winner}`;
+                resultDiv.classList.add('winner-result');
+                
+                totalSpins++;
+                lastWinner = winner.split(' ').slice(-1)[0];
+                
+                document.getElementById('totalSpins').textContent = totalSpins;
+                document.getElementById('lastWinner').textContent = lastWinner;
+
+                spinning = false;
+                document.getElementById('spinBtn').disabled = false;
+            }, 5000);
+        }
+
+        document.getElementById('namesList').addEventListener('input', updateNames);
+        document.getElementById('centerCircle').addEventListener('click', spin);
+        
+        createParticles();
+        updateNames();
+    </script>
+</body>
+</html>
