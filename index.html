@@ -391,8 +391,7 @@
 
         <div class="names-input">
             <label for="namesList">📝 Danh sách tên (mỗi tên một dòng):</label>
-            <textarea id="namesList" placeholder="Nguyễn Văn A&#10;Trần Thị B&#10;Lê Văn C&#10;Phạm Thị D">
-TRÀ XGAI
+            <textarea id="namesList" placeholder="khoi&#10;tra&#10;dev&#10;lọ">TRÀ XGAI
 TRÀ CUTE
 KHÔI DEV</textarea>
         </div>
@@ -562,10 +561,12 @@ KHÔI DEV</textarea>
                 canvas.classList.remove('wheel-spinning');
                 document.getElementById('centerCircle').classList.remove('spinning');
                 
-                // Sửa lỗi tính toán góc quay
-                const normalizedRotation = (360 - (currentRotation % 360)) % 360;
+                // Sửa lỗi tính toán: mũi tên ở góc 270 độ (trên cùng)
+                const normalizedRotation = currentRotation % 360;
                 const sliceAngle = 360 / names.length;
-                const winningIndex = Math.floor(normalizedRotation / sliceAngle) % names.length;
+                // Điều chỉnh để mũi tên ở vị trí trên cùng (270 độ theo Canvas)
+                const adjustedAngle = (normalizedRotation + 90) % 360;
+                const winningIndex = Math.floor((360 - adjustedAngle) / sliceAngle) % names.length;
                 const winner = names[winningIndex];
 
                 playSound('win');
